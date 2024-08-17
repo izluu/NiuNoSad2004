@@ -1,27 +1,56 @@
-const question = document.querySelector(".question");
-const gif = document.querySelector(".gif");
-const yesBtn = document.querySelector(".yes-btn");
-const noBtn = document.querySelector(".no-btn");
-const btnGroup = document.querySelector(".btn-group");
+document.addEventListener("DOMContentLoaded", () => {
+  const heartContainer = document.querySelector(".heart-container");
+  const yesBtn = document.querySelector(".yes-btn");
+  const noBtn = document.querySelector(".no-btn");
+  let heartInterval;
 
-yesBtn.addEventListener("click", () => {
-  question.innerHTML = "I love you too! 😘";
-  gif.src = "2.webp";
-  
-  yesBtn.style.display = "none";
-  noBtn.style.display = "none";
-});
+  function createHearts() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = `${Math.random() * 100}%`;
+      heart.style.animationDelay = `${Math.random() * 2}s`;
+      heartContainer.appendChild(heart);
 
-noBtn.addEventListener("mouseover", () => {
-  const groupRect = btnGroup.getBoundingClientRect();
-  const noBtnRect = noBtn.getBoundingClientRect();
-  const maxX = groupRect.width - noBtnRect.width;
-  const maxY = groupRect.height - noBtnRect.height;
+      // Xóa trái tim sau khi hoàn thành animation
+      setTimeout(() => {
+          heart.remove();
+      }, 3000);
+  }
 
-  const randomX = Math.floor(Math.random() * maxX);
-  const randomY = Math.floor(Math.random() * maxY);
+  function startHeartEffect() {
+      heartInterval = setInterval(createHearts, 300); // Tạo trái tim mỗi 300ms
+  }
 
-  noBtn.style.position = 'absolute'; // Chuyển vị trí nút No sang vị trí tuyệt đối khi di chuyển
-  noBtn.style.left = randomX + "px";
-  noBtn.style.top = randomY + "px";
+  function stopHeartEffect() {
+      clearInterval(heartInterval);
+      heartContainer.innerHTML = ''; // Xóa tất cả trái tim
+  }
+
+  yesBtn.addEventListener("click", () => {
+      stopHeartEffect();
+      document.querySelector(".question").innerHTML = "I love you too!😘";
+      document.querySelector(".question").innerHTML = "Let’s make plans for our future together!😘";
+      document.querySelector(".gif").src = "abc.jpg";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+  });
+
+  noBtn.addEventListener("mouseover", moveNoBtn);
+  noBtn.addEventListener("click", moveNoBtn);
+
+  function moveNoBtn() {
+      const groupRect = noBtn.parentElement.getBoundingClientRect();
+      const noBtnRect = noBtn.getBoundingClientRect();
+      const maxX = groupRect.width - noBtnRect.width;
+      const maxY = groupRect.height - noBtnRect.height;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = `${randomX}px`;
+      noBtn.style.top = `${randomY}px`;
+  }
+
+  startHeartEffect(); // Bắt đầu hiệu ứng trái tim ngay khi trang web được mở
 });
